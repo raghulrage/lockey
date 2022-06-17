@@ -8,7 +8,7 @@ import HomeScreen from "../Src/Screens/HomeScreen";
 import COLORS from "../Configs/Colors";
 import SIZES from "../Configs/Sizes";
 import SettingScreen from "../Src/Screens/SettingScreen";
-import AddScreen from "../Src/Screens/Add";
+import AddScreen from "../Src/Screens/AddScreen";
 
 const Tab = createBottomTabNavigator();
 
