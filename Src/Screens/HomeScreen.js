@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ImageBackground } from 'react-native'; 
+
 import SIZES from '../../Configs/Sizes';
+import Constants from 'expo-constants';
+import Logo from '../../Components.js/Logo';
 
 const HomeScreen = (props) => {
     return (
@@ -10,9 +13,7 @@ const HomeScreen = (props) => {
           resizeMode="cover"
           style={styles.backgroundImage}
         >
-          <View style={styles.content}>
-            <Text>Home Screen</Text>
-          </View>
+          <Logo/>
         </ImageBackground>
       </View>
     );
@@ -21,6 +22,7 @@ const HomeScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: Constants.statusBarHeight,
   },
   backgroundImage: {
     position: "absolute",

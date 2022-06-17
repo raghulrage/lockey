@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ImageBackground } from 'react-native'; 
+import Constants from 'expo-constants';
+
 import SIZES from '../../Configs/Sizes';
 
 const SettingScreen = (props) => {
@@ -21,6 +23,7 @@ const SettingScreen = (props) => {
 const styles = StyleSheet.create({
 container: {
   flex: 1,
+  marginTop: Constants.statusBarHeight,
 },
 backgroundImage: {
   position: "absolute",
