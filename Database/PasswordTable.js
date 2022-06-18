@@ -20,3 +20,15 @@ export const PasswordTableInsert = (payload) => {
 
   ExecuteQuery(insertQuery, TABLE);
 };
+
+export const PasswordTableSelect = async () => {
+  let selectQuery = `SELECT * FROM ${TABLE.NAME}`;
+  return await SelectQuery(selectQuery);
+}
+
+
+export const PasswordTableDelete = (payload) => {
+    let field = "id";
+    const deleteQuery = `DELETE FROM ${TABLE.NAME} WHERE ${field} = ${payload};`
+    ExecuteQuery(deleteQuery, TABLE)
+  }
