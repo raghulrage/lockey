@@ -1,23 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground } from 'react-native'; 
+import React, { useEffect, useState, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  ScrollView,
+} from "react-native";
 
-import SIZES from '../../Configs/Sizes';
-import Constants from 'expo-constants';
-import Logo from '../../Components.js/Logo';
+import SIZES from "../../Configs/Sizes";
+import Constants from "expo-constants";
+import Logo from "../../Components.js/Logo";
+import { PasswordTableSelect } from "../../Database/PasswordTable";
+import _ from "lodash";
+import SwipebleCard from "../../Components.js/HomeScreen/SwipebleCard";
+import COLORS from "../../Configs/Colors";
 
 const HomeScreen = (props) => {
-    return (
-      <View style={styles.container}>
-        <ImageBackground
-          source={require("../../assets/Images/Background.png")}
-          resizeMode="cover"
-          style={styles.backgroundImage}
-        >
-          <Logo/>
-        </ImageBackground>
-      </View>
-    );
-} 
+  const [passData, setpassData] = useState([]);
+  const swipeableRef = useRef(null);
+  const getPassData = async () => {
+    let d = await PasswordTableSelect();
+    setpassData(d);
+  };
+  useEffect(() => {
+    getPassData();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("../../assets/Images/Background.png")}
+        resizeMode="cover"
+        style={styles.backgroundImage}
+      >
+        <Logo />
+
+        {!_.isEmpty(passData) ? (
+          <ScrollView>
+            {_.map(passData, (item) => (
+              <SwipebleCard key={item.id} data={item} />
+            ))}
+            <View style={{ height: 120 }} />
+          </ScrollView>
+        ) : (
+          <View style={{alignItems : "center", top : SIZES.SCREEN_HEIGHT * 0.15}}>
+            <Image
+              style={{ height: 100 * 2, width: 150 * 2 }}
+              source={require("../../assets/Images/no-data.png")}
+            />
+            <Text style={styles.nodata}>No Records Found !</Text>
+            <Text style={styles.nodatasub}>Start adding your passwords...</Text>
+          </View>
+        )}
+      </ImageBackground>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -28,14 +67,24 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     top: 0,
-    width: SIZES.SCREEN_WIDTH + 10,
+    width: SIZES.SCREEN_WIDTH,
     height: SIZES.SCREEN_HEIGHT + 10,
   },
-  content : {
-    flex : 1,
+  content: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  nodata : {
+    color : COLORS.GREY,
+    fontSize : SIZES.LARGER,
+    marginTop : 20
+  },
+  nodatasub : {
+    color : COLORS.GREY,
+    fontSize : SIZES.SMALL,
+    fontFamily : "light-italic"
   }
 });
 
- export default HomeScreen;
+export default HomeScreen;
