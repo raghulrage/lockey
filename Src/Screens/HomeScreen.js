@@ -6,6 +6,7 @@ import {
   ImageBackground,
   Image,
   ScrollView,
+  TouchableOpacity
 } from "react-native";
 import _ from "lodash";
 import { useFocusEffect } from "@react-navigation/native";
@@ -20,8 +21,20 @@ import COLORS from "../../Configs/Colors";
 const HomeScreen = (props) => {
 
   const [passData, setpassData] = useState([]);
+  const [selectedSort, setSelectedSort] = useState("used");
+  const sortData = [
+    {
+      id: "used",
+      placeholder: "Frequently used",
+    },
+    {
+      id: "created_at",
+      placeholder: "Recently added",
+    },
+  ];
+
   const getPassData = async () => {
-    let d = await PasswordTableSelect();
+    let d = await PasswordTableSelect(selectedSort);
     setpassData(d);
   };
 
@@ -33,7 +46,28 @@ const HomeScreen = (props) => {
 
   useEffect(() => {
     getPassData();
-  }, []);
+  }, [selectedSort]);
+
+  const RenderFilter = ({item}) => {
+    return (
+      <TouchableOpacity
+      onPress={()=>setSelectedSort(item.id)}
+        style={{
+          ...styles.button,
+          backgroundColor:
+          selectedSort == item.id ? COLORS.PRIMARY : COLORS.WHITE,
+        }}
+      >
+        <Text
+          style={{
+            color: selectedSort == item.id ? COLORS.WHITE : COLORS.BLACK,
+          }}
+        >
+          {item.placeholder}
+        </Text>
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -44,15 +78,34 @@ const HomeScreen = (props) => {
       >
         <Logo />
 
+        <View
+          style={{
+            flexDirection: "row",
+            marginVertical: 10,
+            marginHorizontal: 20,
+          }}
+        >
+          {_.map(sortData, (item) => (
+            <RenderFilter item={item} />
+          ))}
+        </View>
+
         {!_.isEmpty(passData) ? (
           <ScrollView>
             {_.map(passData, (item) => (
-              <SwipebleCard key={item.id} data={item} refresh={getPassData} navigation={props.navigation}/>
+              <SwipebleCard
+                key={item.id}
+                data={item}
+                refresh={getPassData}
+                navigation={props.navigation}
+              />
             ))}
             <View style={{ height: 120 }} />
           </ScrollView>
         ) : (
-          <View style={{alignItems : "center", top : SIZES.SCREEN_HEIGHT * 0.15}}>
+          <View
+            style={{ alignItems: "center", top: SIZES.SCREEN_HEIGHT * 0.15 }}
+          >
             <Image
               style={{ height: 100 * 2, width: 150 * 2 }}
               source={require("../../assets/Images/no-data.png")}
@@ -92,6 +145,13 @@ const styles = StyleSheet.create({
     color : COLORS.GREY,
     fontSize : SIZES.SMALL,
     fontFamily : "light-italic"
+  },
+  button : {
+    paddingHorizontal : 10,
+    paddingVertical : 8,
+    margin : 5,
+    elevation : 5,
+    borderRadius : 5
   }
 });
 
