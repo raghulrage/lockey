@@ -5,6 +5,7 @@ import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
+import { Root } from "react-native-alert-notification";
 
 import COLORS from './Configs/Colors';
 import FONTS from './Configs/Fonts';
@@ -45,5 +46,9 @@ export default function App() {
   if (!fontsLoaded)
     return <AppLoading />;
 
-  return <BottomTab/>
+  return (
+    <Root theme='dark'>
+      <BottomTab />
+    </Root>
+  );
 }
