@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,22 +7,30 @@ import {
   Image,
   ScrollView,
 } from "react-native";
+import _ from "lodash";
+import { useFocusEffect } from "@react-navigation/native";
 
 import SIZES from "../../Configs/Sizes";
 import Constants from "expo-constants";
 import Logo from "../../Components.js/Logo";
 import { PasswordTableSelect } from "../../Database/PasswordTable";
-import _ from "lodash";
 import SwipebleCard from "../../Components.js/HomeScreen/SwipebleCard";
 import COLORS from "../../Configs/Colors";
 
 const HomeScreen = (props) => {
+
   const [passData, setpassData] = useState([]);
-  const swipeableRef = useRef(null);
   const getPassData = async () => {
     let d = await PasswordTableSelect();
     setpassData(d);
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getPassData();
+    }, [])
+  );
+
   useEffect(() => {
     getPassData();
   }, []);
