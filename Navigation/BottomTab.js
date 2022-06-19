@@ -27,6 +27,7 @@ const BottomTab = () => {
       <Tab.Navigator
         screenOptions={{
           tabBarShowLabel: false,
+          tabBarHideOnKeyboard: true,
           tabBarStyle: {
             position: "absolute",
             bottom: 25,

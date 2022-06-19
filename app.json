@@ -25,7 +25,8 @@
         "foregroundImage": "./assets/Logo.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.raghulrage.lockey"
+      "package": "com.raghulrage.lockey",
+      "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
       "favicon": "./assets/favicon.png"
