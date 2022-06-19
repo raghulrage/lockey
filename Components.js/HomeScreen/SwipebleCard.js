@@ -6,7 +6,7 @@ import ListDelete from './ListDelete';
 
 const SwipebleCard = (props) => {
   const renderRightActions = (progress, dragX) => {
-    return <ListDelete />;
+    return <ListDelete data={props.data} refresh={props.refresh}/>;
   };
 
   return (
