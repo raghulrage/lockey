@@ -21,6 +21,23 @@ export const PasswordTableInsert = (payload) => {
   ExecuteQuery(insertQuery, TABLE);
 };
 
+export const PasswordTableUpdate = (payload) => {
+  let fields = _.map(TABLE.COLUMNS, col => { return col[0] })
+  let id = payload.id
+  fields.shift()
+  fields.pop()
+  delete payload["id"]
+
+  let values = _.zip(fields, Object.values(payload))
+  values = _.map(values, item => { return `${item[0]} = ${typeof (item[1]) === "number" ? item[1] : `'${item[1]}'`}` })
+  
+  const updateQuery = `UPDATE ${TABLE.NAME}
+  SET ${_.join(values, ', ')}
+  WHERE id = ${id};`
+
+  ExecuteQuery(updateQuery, TABLE)
+}
+
 export const PasswordTableSelect = async () => {
   let selectQuery = `SELECT * FROM ${TABLE.NAME}`;
   return await SelectQuery(selectQuery);

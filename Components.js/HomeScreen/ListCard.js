@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native'; 
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'; 
 import COLORS from '../../Configs/Colors';
 import SIZES from '../../Configs/Sizes';
 import { getRandomColor } from '../CustomFunctions';
@@ -7,11 +7,18 @@ import { getRandomColor } from '../CustomFunctions';
 const ListCard = (props) => {
   const { id, title, data, used, created_at, updated_at } = props.data;
 
+  const showDetailScreen = ()=>{
+    props.navigation.navigate("DetailScreen", {
+      data: props.data,
+      refresh: props.refresh,
+    });
+  }
+
   return (
-    <View style={{...styles.container, borderColor : getRandomColor()}}>
+    <TouchableOpacity onPress={showDetailScreen} style={{...styles.container, borderColor : getRandomColor()}}>
       <Text style={styles.contentHead}>{title}</Text>
       <Text style={styles.contentSide}>used {used} time(s)</Text>
-    </View>
+    </TouchableOpacity>
   );
 } 
 

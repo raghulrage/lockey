@@ -9,6 +9,7 @@ import COLORS from "../Configs/Colors";
 import SIZES from "../Configs/Sizes";
 import SettingScreen from "../Src/Screens/SettingScreen";
 import AddScreen from "../Src/Screens/AddScreen";
+import HomeStack from "./HomeStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -62,8 +63,8 @@ const BottomTab = () => {
               </View>
             ),
           }}
-          name="HomeScreen"
-          component={HomeScreen}
+          name="Home"
+          component={HomeStack}
         />
 
         <Tab.Screen

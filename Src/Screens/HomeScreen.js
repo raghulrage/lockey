@@ -47,7 +47,7 @@ const HomeScreen = (props) => {
         {!_.isEmpty(passData) ? (
           <ScrollView>
             {_.map(passData, (item) => (
-              <SwipebleCard key={item.id} data={item} refresh={getPassData}/>
+              <SwipebleCard key={item.id} data={item} refresh={getPassData} navigation={props.navigation}/>
             ))}
             <View style={{ height: 120 }} />
           </ScrollView>
