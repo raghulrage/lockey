@@ -18,14 +18,18 @@ import * as Localization from "expo-localization";
 
 import SIZES from "../../Configs/Sizes";
 import COLORS from "../../Configs/Colors";
-import { JSONToString } from "../../Components.js/CustomFunctions";
-import { PasswordTableInsert } from "../../Database/PasswordTable";
+import { JSONToString, StringToJSON } from "../../Components.js/CustomFunctions";
+import { PasswordTableInsert, PasswordTableUpdate } from "../../Database/PasswordTable";
 import {
   ToastNotification,
   TOAST_ALERT_TYPES,
 } from "../../Components.js/ToastNotification";
 
 const AddScreen = (props) => {
+
+  const DATA = _.get(props, "route.params.data",{})
+  const refresh = _.get(props, "route.params.refresh",{})
+
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState(false);
   const inputTemplate = { key: "", value: "", hide: false };
@@ -53,22 +57,7 @@ const AddScreen = (props) => {
     setData(d);
   };
 
-  const toggleHideForColumn = (index) => {
-    let d = _.cloneDeep(data);
-    d[index]["hide"] = !d[index]["hide"];
-    setData(d);
-  };
-  const submitData = () => {
-    if (_.isEmpty(title)) {
-      setTitleError(true);
-      ToastNotification(
-        TOAST_ALERT_TYPES.WARNING,
-        "WARNING!",
-        "Please add password title!!!"
-      );
-      return;
-    }
-
+  const validateData = (data)=>{
     let d = _.map(data, (item) => {
       if (_.isEmpty(item.key) || _.isEmpty(item.value)) {
         ToastNotification(
@@ -80,8 +69,16 @@ const AddScreen = (props) => {
       }
       return false;
     });
-    if (d.includes(true)) return;
+    return d
+  }
 
+  const toggleHideForColumn = (index) => {
+    let d = _.cloneDeep(data);
+    d[index]["hide"] = !d[index]["hide"];
+    setData(d);
+  };
+
+  const insertIntoTable = () =>{
     let payload = {
       title: title,
       data: JSONToString(data),
@@ -95,6 +92,48 @@ const AddScreen = (props) => {
       "Password Added Successfully!!!"
     );
     resetData();
+  }
+
+  const updateIntoTable = () =>{
+    let payload = {
+      id : DATA.id,
+      title: title,
+      data: JSONToString(data),
+      used: DATA.used,
+      created_at : DATA.created_at
+    };
+    PasswordTableUpdate(payload);
+    ToastNotification(
+      TOAST_ALERT_TYPES.SUCCESS,
+      "SUCCESS!",
+      "Password Updated Successfully!!!"
+    );
+    refresh()
+    setTimeout(() => {
+      props.navigation.goBack()
+    }, 500);
+  }
+
+
+  const submitData = () => {
+    if (_.isEmpty(title)) {
+      setTitleError(true);
+      ToastNotification(
+        TOAST_ALERT_TYPES.WARNING,
+        "WARNING!",
+        "Please add password title!!!"
+      );
+      return;
+    }
+
+    if (validateData().includes(true)) return;
+
+    if(_.isEmpty(DATA)){
+      insertIntoTable()
+    }
+    else{
+      updateIntoTable()
+    }
   };
 
   const resetData = () => {
@@ -109,8 +148,18 @@ const AddScreen = (props) => {
   //   }, [])
   // );
 
+  const setInitialValue = () => {
+    if(_.isEmpty(DATA)){
+      addColumn();
+    }
+    else{
+      setTitle(DATA.title)
+      setData(StringToJSON(DATA.data))
+    }
+  }
+
   useEffect(() => {
-    addColumn();
+    setInitialValue()
   }, []);
 
   return (

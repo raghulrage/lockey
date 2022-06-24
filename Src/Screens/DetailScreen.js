@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Constants from "expo-constants";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Feather } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 
 import SIZES from "../../Configs/Sizes";
@@ -19,7 +19,10 @@ import {
   ToastNotification,
   TOAST_ALERT_TYPES,
 } from "../../Components.js/ToastNotification";
-import { PasswordTableUpdate } from "../../Database/PasswordTable";
+import {
+  PasswordTableSelectById,
+  PasswordTableUpdate,
+} from "../../Database/PasswordTable";
 
 const DetailScreen = (props) => {
   LogBox.ignoreLogs([
@@ -28,26 +31,38 @@ const DetailScreen = (props) => {
 
   const [used, setUsed] = useState(false);
 
-  const data = props.route.params.data;
-  const passData = StringToJSON(data.data);
+  const [data, setData] = useState({});
+  const [passData, setPassData] = useState([]);
   const refresh = props.route.params.refresh;
 
   const updateUsage = () => {
     if (used) {
-      let payload ={
-        id : data.id,
-        title : data.title,
-        data : data.data,
-        used : data.used + 1,
-        created_at : data.created_at,
-      }
+      let payload = {
+        id: data.id,
+        title: data.title,
+        data: data.data,
+        used: data.used + 1,
+        created_at: data.created_at,
+      };
       PasswordTableUpdate(payload);
       refresh();
     }
   };
 
+  const getPasswordDetail = async () => {
+    let d = await PasswordTableSelectById(props.route.params.data.id);
+    setData(d[0]);
+    setPassData(StringToJSON(d[0].data));
+  };
+
+  const constRefreshData = () => {
+    getPasswordDetail();
+    refresh();
+  };
+
   useEffect(() => {
     updateUsage();
+    getPasswordDetail();
   }, [used]);
 
   const copyToClipboard = async (text, column) => {
@@ -60,44 +75,64 @@ const DetailScreen = (props) => {
     );
   };
 
-  return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../../assets/Images/Background.png")}
-        resizeMode="cover"
-        style={styles.backgroundImage}
-      >
-        <View style={styles.content}>
-          <Text style={styles.heading}>{data.title}</Text>
+  if (!_.isEmpty(data))
+    return (
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("../../assets/Images/Background.png")}
+          resizeMode="cover"
+          style={styles.backgroundImage}
+        >
+          <View style={styles.content}>
+            <Text style={styles.heading}>{data.title}</Text>
 
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            {_.map(passData, (item) => {
-              return (
-                <View style={{ marginBottom: 10 }}>
-                  <Text style={styles.subhead}>{item.key}</Text>
-                  <View style={styles.subcontent}>
-                    <Text>
-                      {item.hide ? "*".repeat(item.value.length) : item.value}
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => copyToClipboard(item.value, item.key)}
-                    >
-                      <MaterialIcons
-                        name="content-copy"
-                        size={SIZES.LARGE}
-                        color={COLORS.GREY}
-                      />
-                    </TouchableOpacity>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              {_.map(passData, (item) => {
+                return (
+                  <View style={{ marginBottom: 10 }}>
+                    <Text style={styles.subhead}>{item.key}</Text>
+                    <View style={styles.subcontent}>
+                      <Text>
+                        {item.hide ? "*".repeat(item.value.length) : item.value}
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => copyToClipboard(item.value, item.key)}
+                      >
+                        <MaterialIcons
+                          name="content-copy"
+                          size={SIZES.LARGE}
+                          color={COLORS.GREY}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-              );
-            })}
-            <View style={{ height: 120 }} />
+                );
+              })}
+              <View style={{ height: 120 }} />
+            </View>
           </View>
-        </View>
-      </ImageBackground>
-    </View>
-  );
+
+          {/* Edit Button */}
+          <TouchableOpacity
+            onPress={() => {
+              props.navigation.navigate("AddScreen", {
+                data: data,
+                refresh: constRefreshData,
+              });
+            }}
+            style={{ position: "absolute", right: 40, top: 30 }}
+          >
+            <Feather
+              name="edit"
+              size={SIZES.SMALLER * 2}
+              color={COLORS.BLACK}
+            />
+          </TouchableOpacity>
+        </ImageBackground>
+      </View>
+    );
+
+  return <View />;
 };
 
 const styles = StyleSheet.create({

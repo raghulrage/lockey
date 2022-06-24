@@ -42,7 +42,10 @@ export const PasswordTableSelect = async (sort) => {
   let selectQuery = `SELECT * FROM ${TABLE.NAME} ORDER BY ${sort} DESC`;
   return await SelectQuery(selectQuery);
 }
-
+export const PasswordTableSelectById = async (id) => {
+  let selectQuery = `SELECT * FROM ${TABLE.NAME} where id = ${id}`;
+  return await SelectQuery(selectQuery);
+}
 
 export const PasswordTableDelete = (payload) => {
     let field = "id";
