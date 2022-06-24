@@ -6,10 +6,12 @@ import {
   ImageBackground,
   Image,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  TextInput,
 } from "react-native";
 import _ from "lodash";
 import { useFocusEffect } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
 import SIZES from "../../Configs/Sizes";
 import Constants from "expo-constants";
@@ -19,9 +21,9 @@ import SwipebleCard from "../../Components.js/HomeScreen/SwipebleCard";
 import COLORS from "../../Configs/Colors";
 
 const HomeScreen = (props) => {
-
   const [passData, setpassData] = useState([]);
   const [selectedSort, setSelectedSort] = useState("used");
+  const [searchData, setSearchData] = useState("");
   const sortData = [
     {
       id: "used",
@@ -34,7 +36,7 @@ const HomeScreen = (props) => {
   ];
 
   const getPassData = async () => {
-    let d = await PasswordTableSelect(selectedSort);
+    let d = await PasswordTableSelect(selectedSort, searchData);
     setpassData(d);
   };
 
@@ -48,14 +50,14 @@ const HomeScreen = (props) => {
     getPassData();
   }, [selectedSort]);
 
-  const RenderFilter = ({item}) => {
+  const RenderFilter = ({ item }) => {
     return (
       <TouchableOpacity
-      onPress={()=>setSelectedSort(item.id)}
+        onPress={() => setSelectedSort(item.id)}
         style={{
           ...styles.button,
           backgroundColor:
-          selectedSort == item.id ? COLORS.PRIMARY : COLORS.WHITE,
+            selectedSort == item.id ? COLORS.PRIMARY : COLORS.WHITE,
         }}
       >
         <Text
@@ -67,7 +69,7 @@ const HomeScreen = (props) => {
         </Text>
       </TouchableOpacity>
     );
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -77,6 +79,26 @@ const HomeScreen = (props) => {
         style={styles.backgroundImage}
       >
         <Logo />
+
+        {/* Search Bar */}
+        <View style={styles.searchbar}>
+          <TextInput
+            style={{ width: SIZES.SCREEN_WIDTH * 0.7, fontSize: SIZES.SMALL }}
+            placeholder="Search"
+            placeholderTextColor={COLORS.GREY}
+            value={searchData}
+            onChangeText={(text) => {
+              setSearchData(text);
+            }}
+          />
+          <TouchableOpacity onPress={getPassData}>
+            <Ionicons
+              name="search-outline"
+              size={SIZES.LARGER}
+              color={COLORS.GREY}
+            />
+          </TouchableOpacity>
+        </View>
 
         <View
           style={{
@@ -136,23 +158,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  nodata : {
-    color : COLORS.GREY,
-    fontSize : SIZES.LARGER,
-    marginTop : 20
+  nodata: {
+    color: COLORS.GREY,
+    fontSize: SIZES.LARGER,
+    marginTop: 20,
   },
-  nodatasub : {
-    color : COLORS.GREY,
-    fontSize : SIZES.SMALL,
-    fontFamily : "light-italic"
+  nodatasub: {
+    color: COLORS.GREY,
+    fontSize: SIZES.SMALL,
+    fontFamily: "light-italic",
   },
-  button : {
-    paddingHorizontal : 10,
-    paddingVertical : 8,
-    margin : 5,
-    elevation : 5,
-    borderRadius : 5
-  }
+  button: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    margin: 5,
+    elevation: 5,
+    borderRadius: 5,
+  },
+  searchbar: {
+    backgroundColor: COLORS.WHITE,
+    elevation: 5,
+    marginHorizontal: 15,
+    padding: 10,
+    paddingHorizontal : 20,
+    borderRadius: 5,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+  },
 });
 
 export default HomeScreen;
