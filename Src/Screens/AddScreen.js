@@ -13,10 +13,12 @@ import Constants from "expo-constants";
 import _ from "lodash";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
+import moment from "moment-timezone";
+import * as Localization from "expo-localization";
 
 import SIZES from "../../Configs/Sizes";
 import COLORS from "../../Configs/Colors";
-import { currentTime, JSONToString } from "../../Components.js/CustomFunctions";
+import { JSONToString } from "../../Components.js/CustomFunctions";
 import { PasswordTableInsert } from "../../Database/PasswordTable";
 import {
   ToastNotification,
@@ -28,6 +30,7 @@ const AddScreen = (props) => {
   const [titleError, setTitleError] = useState(false);
   const inputTemplate = { key: "", value: "", hide: false };
   const [data, setData] = useState([]);
+  const currentTime = moment().tz(Localization.timezone).format("DD-MM-YYYY HH:mm:ss");
 
   const addColumn = () => {
     setData([...data, inputTemplate]);
