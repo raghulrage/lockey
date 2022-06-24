@@ -10,6 +10,7 @@ import {
 import Constants from "expo-constants";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
+import { Ionicons } from "@expo/vector-icons";
 
 import SIZES from "../../Configs/Sizes";
 import _ from "lodash";
@@ -24,6 +25,7 @@ import { PasswordTableUpdate } from "../../Database/PasswordTable";
 const DetailScreen = (props) => {
   LogBox.ignoreLogs([
     "Non-serializable values were found in the navigation state.",
+    "This can break usage such as persisting and restoring state."
   ]);
 
   const [used, setUsed] = useState(false);
@@ -31,6 +33,7 @@ const DetailScreen = (props) => {
   const data = props.route.params.data;
   const passData = StringToJSON(data.data);
   const refresh = props.route.params.refresh;
+  let cloneData = _.cloneDeep(passData);
 
   const updateUsage = () => {
     if (used) {
@@ -60,6 +63,12 @@ const DetailScreen = (props) => {
     );
   };
 
+  const toggleHide = (item, index) => {
+    let res = item
+    res.hide = !item.hide
+    cloneData[index] = res
+  }
+  
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -71,23 +80,41 @@ const DetailScreen = (props) => {
           <Text style={styles.heading}>{data.title}</Text>
 
           <View style={{ flex: 1, justifyContent: "center" }}>
-            {_.map(passData, (item) => {
+            {_.map(cloneData, (item,index) => {
               return (
-                <View style={{ marginBottom: 10 }}>
+                <View key={item.key} style={{ marginBottom: 10 }}>
                   <Text style={styles.subhead}>{item.key}</Text>
                   <View style={styles.subcontent}>
                     <Text>
                       {item.hide ? "*".repeat(item.value.length) : item.value}
                     </Text>
-                    <TouchableOpacity
-                      onPress={() => copyToClipboard(item.value, item.key)}
-                    >
-                      <MaterialIcons
-                        name="content-copy"
-                        size={SIZES.LARGE}
-                        color={COLORS.GREY}
-                      />
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: "row" }}>
+                      {item.hide && (
+                        <TouchableOpacity
+                          onPress={() => toggleHide(item, index)}
+                          style={{marginHorizontal : 5, paddingHorizontal : 5}}
+                        >
+                          <Ionicons
+                            name={
+                              item.hide
+                                ? "ios-eye-off-outline"
+                                : "ios-eye-outline"
+                            }
+                            size={SIZES.LARGE}
+                            color={COLORS.GREY}
+                          />
+                        </TouchableOpacity>
+                      )}
+                      <TouchableOpacity
+                        onPress={() => copyToClipboard(item.value, item.key)}
+                      >
+                        <MaterialIcons
+                          name="content-copy"
+                          size={SIZES.LARGE}
+                          color={COLORS.GREY}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               );

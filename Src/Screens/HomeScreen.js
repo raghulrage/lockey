@@ -86,7 +86,7 @@ const HomeScreen = (props) => {
           }}
         >
           {_.map(sortData, (item) => (
-            <RenderFilter item={item} />
+            <RenderFilter key={item.id} item={item} />
           ))}
         </View>
 
