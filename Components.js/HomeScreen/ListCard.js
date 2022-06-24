@@ -10,7 +10,6 @@ const ListCard = (props) => {
   const showDetailScreen = ()=>{
     props.navigation.navigate("DetailScreen", {
       data: props.data,
-      refresh: props.refresh,
     });
   }
 

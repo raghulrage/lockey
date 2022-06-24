@@ -15,7 +15,7 @@ const SwipebleCard = (props) => {
         useNativeAnimations={true}
         renderRightActions={renderRightActions}
       >
-        <ListCard data={props.data} refresh={props.refresh} navigation={props.navigation} />
+        <ListCard data={props.data} navigation={props.navigation} />
       </Swipeable>
     </GestureHandlerRootView>
   );

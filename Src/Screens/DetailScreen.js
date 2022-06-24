@@ -33,7 +33,6 @@ const DetailScreen = (props) => {
 
   const [data, setData] = useState({});
   const [passData, setPassData] = useState([]);
-  const refresh = props.route.params.refresh;
 
   const updateUsage = () => {
     if (used) {
@@ -45,7 +44,6 @@ const DetailScreen = (props) => {
         created_at: data.created_at,
       };
       PasswordTableUpdate(payload);
-      refresh();
     }
   };
 
@@ -57,7 +55,6 @@ const DetailScreen = (props) => {
 
   const constRefreshData = () => {
     getPasswordDetail();
-    refresh();
   };
 
   useEffect(() => {
