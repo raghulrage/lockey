@@ -10,6 +10,7 @@ import {
 import Constants from "expo-constants";
 import { MaterialIcons, Feather } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
+import moment from "moment-timezone";
 
 import SIZES from "../../Configs/Sizes";
 import _ from "lodash";
@@ -84,6 +85,12 @@ const DetailScreen = (props) => {
         >
           <View style={styles.content}>
             <Text style={styles.heading}>{data.title}</Text>
+            <Text style={{ fontSize: SIZES.SMALLER }}>
+              <Text style={{fontFamily : "semibold"}}>
+                Added On:
+              </Text>
+              {" " + moment(data.created_at, "DD-MM-YYYY hh:mm:ss").format("Do MMM YYYY, hA")}
+            </Text>
 
             <View style={{ flex: 1, justifyContent: "center" }}>
               {_.map(passData, (item, index) => {
@@ -154,7 +161,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: SIZES.LARGE,
     fontFamily: "bold",
-    marginTop: 10,
+    marginVertical: 10,
   },
   subhead: {
     fontFamily: "semibold",
