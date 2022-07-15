@@ -6,6 +6,7 @@ export const ToastNotification = (TYPE, TITLE, DESC) => {
       type: TYPE,
       title: TITLE,
       textBody: DESC,
+      autoClose: 1500,
     });
 } 
 
