@@ -44,6 +44,7 @@ const DetailScreen = (props) => {
         created_at: data.created_at,
       };
       PasswordTableUpdate(payload);
+      props.route.params.refresh()
     }
   };
 
@@ -55,6 +56,7 @@ const DetailScreen = (props) => {
 
   const constRefreshData = () => {
     getPasswordDetail();
+    props.route.params.refresh()
   };
 
   useEffect(() => {
@@ -84,9 +86,9 @@ const DetailScreen = (props) => {
             <Text style={styles.heading}>{data.title}</Text>
 
             <View style={{ flex: 1, justifyContent: "center" }}>
-              {_.map(passData, (item) => {
+              {_.map(passData, (item, index) => {
                 return (
-                  <View style={{ marginBottom: 10 }}>
+                  <View key={index} style={{ marginBottom: 10 }}>
                     <Text style={styles.subhead}>{item.key}</Text>
                     <View style={styles.subcontent}>
                       <Text>
