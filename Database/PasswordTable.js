@@ -39,9 +39,18 @@ export const PasswordTableUpdate = (payload) => {
 }
 
 export const PasswordTableSelect = async (sort, search) => {
-  let selectQuery = `SELECT * FROM ${TABLE.NAME} WHERE title like "%${search}%" ORDER BY ${sort} DESC`;
+
+  let sortValue = sort =='created_at' ? "date" : sort
+  let selectQuery = 
+  `SELECT *, 
+  substr(created_at,7,4)||'-'||substr(created_at,4,2)||'-'||substr(created_at,1,2) as date  
+  FROM ${TABLE.NAME} 
+  WHERE title like "%${search}%" 
+  ORDER BY ${sortValue} DESC`;
+
   return await SelectQuery(selectQuery);
 }
+
 export const PasswordTableSelectById = async (id) => {
   let selectQuery = `SELECT * FROM ${TABLE.NAME} where id = ${id}`;
   return await SelectQuery(selectQuery);
