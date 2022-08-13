@@ -8,9 +8,9 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  RefreshControl
 } from "react-native";
 import _ from "lodash";
-import { useFocusEffect } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 import SIZES from "../../Configs/Sizes";
@@ -24,6 +24,7 @@ const HomeScreen = (props) => {
   const [passData, setpassData] = useState([]);
   const [selectedSort, setSelectedSort] = useState("used");
   const [searchData, setSearchData] = useState("");
+  const [refreshing, setRefreshing] = React.useState(false);
   const sortData = [
     {
       id: "used",
@@ -38,13 +39,8 @@ const HomeScreen = (props) => {
   const getPassData = async () => {
     let d = await PasswordTableSelect(selectedSort, searchData);
     setpassData(d);
+    setRefreshing(false)
   };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      getPassData();
-    }, [])
-  );
 
   useEffect(() => {
     getPassData();
@@ -113,7 +109,7 @@ const HomeScreen = (props) => {
         </View>
 
         {!_.isEmpty(passData) ? (
-          <ScrollView>
+          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getPassData} />}>
             {_.map(passData, (item) => (
               <SwipebleCard
                 key={item.id}

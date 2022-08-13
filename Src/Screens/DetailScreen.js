@@ -10,6 +10,7 @@ import {
 import Constants from "expo-constants";
 import { MaterialIcons, Feather } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
+import moment from "moment-timezone";
 
 import SIZES from "../../Configs/Sizes";
 import _ from "lodash";
@@ -44,6 +45,7 @@ const DetailScreen = (props) => {
         created_at: data.created_at,
       };
       PasswordTableUpdate(payload);
+      props.route.params.refresh()
     }
   };
 
@@ -55,6 +57,7 @@ const DetailScreen = (props) => {
 
   const constRefreshData = () => {
     getPasswordDetail();
+    props.route.params.refresh()
   };
 
   useEffect(() => {
@@ -82,11 +85,17 @@ const DetailScreen = (props) => {
         >
           <View style={styles.content}>
             <Text style={styles.heading}>{data.title}</Text>
+            <Text style={{ fontSize: SIZES.SMALLER }}>
+              <Text style={{fontFamily : "semibold"}}>
+                Added On:
+              </Text>
+              {" " + moment(data.created_at, "DD-MM-YYYY hh:mm:ss").format("Do MMM YYYY, hA")}
+            </Text>
 
             <View style={{ flex: 1, justifyContent: "center" }}>
-              {_.map(passData, (item) => {
+              {_.map(passData, (item, index) => {
                 return (
-                  <View style={{ marginBottom: 10 }}>
+                  <View key={index} style={{ marginBottom: 10 }}>
                     <Text style={styles.subhead}>{item.key}</Text>
                     <View style={styles.subcontent}>
                       <Text>
@@ -152,7 +161,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: SIZES.LARGE,
     fontFamily: "bold",
-    marginTop: 10,
+    marginVertical: 10,
   },
   subhead: {
     fontFamily: "semibold",
