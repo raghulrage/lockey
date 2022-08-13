@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 export const createTables = () => {
   _.map(TABLENAME, (TABLE) => {
-    const createQuery = `CREATE TABLE  ${TABLE.NAME}(${_.join(
+    const createQuery = `CREATE TABLE IF NOT EXISTS ${TABLE.NAME}(${_.join(
       _.map(TABLE.COLUMNS, (col) => {
         return _.join(col, " ");
       }),

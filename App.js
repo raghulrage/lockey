@@ -28,12 +28,7 @@ export default function App() {
 
 
   useEffect(() => {
-    AsyncStorage.getItem("LockeyOpened").then((res) => {
-      if (_.isEmpty(res)) {
-        createTables()
-        AsyncStorage.setItem('LockeyOpened', "opened")
-      }
-    });
+    createTables()
 
     Font.loadAsync(FONTS).then(() => {
       setFontsLoaded(true);
